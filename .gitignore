@@ -2,3 +2,16 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# Default location for output
+output/
+# Data
+data/
+
+
+
+
+
+
+
+
