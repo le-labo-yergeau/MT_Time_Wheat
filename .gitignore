@@ -4,11 +4,13 @@
 .Ruserdata
 
 # Output
-/output/figs/**
-/output/tables/**
+/output/**
+!/output/**/
+!output/**/Readme.md
 # Data
-/data/intermediate/**
-/data/raw/**
+/data/**
+!/data/**/
+!/data/**/Readme.md
 
 
 
