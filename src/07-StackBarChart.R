@@ -254,3 +254,142 @@ fig6 <- ggarrange(stack.genus.DA, stack.fun.DA, labels = c("A","B"), common.lege
 fig6
 ggsave(fig6, filename = here("output", "figs", "fig6.tiff"), compression = "lzw", dpi = 600, device = "tiff", height = 14, width = 14, units = "in")
 
+###Stack bar charts for the DA transcripts (stage vs. previous, 4 growth stage pairs x 4 treatments = 16)
+#Create DA transcripts lists
+TSE.A.list <- readRDS(here("data", "intermediate", "DE.results.TvsSE.A.RDS"))$DEfound
+#28,296 elements
+TSE.B.list<- readRDS(here("data", "intermediate", "DE.results.TvsSE.B.RDS"))$DEfound
+#21,554 elements
+TSE.C.list<- readRDS(here("data", "intermediate", "DE.results.TvsSE.C.RDS"))$DEfound
+#22,991 elements
+TSE.D.list<- readRDS(here("data", "intermediate", "DE.results.TvsSE.D.RDS"))$DEfound
+#22,633 elements
+SEB.A.list <- readRDS(here("data", "intermediate", "DE.results.SEvsB.A.RDS"))$DEfound
+#273,969 elements
+SEB.B.list<- readRDS(here("data", "intermediate", "DE.results.SEvsB.B.RDS"))$DEfound
+#68,720 elements
+SEB.C.list<- readRDS(here("data", "intermediate", "DE.results.SEvsB.C.RDS"))$DEfound
+#29,475 elements
+SEB.D.list<- readRDS(here("data", "intermediate", "DE.results.SEvsB.D.RDS"))$DEfound
+#30,286 elements
+BH.A.list <- readRDS(here("data", "intermediate", "DE.results.BvsH.A.RDS"))$DEfound
+#287,091 elements
+BH.B.list<- readRDS(here("data", "intermediate", "DE.results.HvsB.B.RDS"))$DEfound
+#49,704 elements
+BH.C.list<- readRDS(here("data", "intermediate", "DE.results.BvsH.C.RDS"))$DEfound
+#62,413 elements
+BH.D.list<- readRDS(here("data", "intermediate", "DE.results.HvsB.D.RDS"))$DEfound
+#18,573 elements
+HF.A.list <- readRDS(here("data", "intermediate", "DE.results.HvsF.A.RDS"))$DEfound
+#150,083 elements
+HF.B.list<- readRDS(here("data", "intermediate", "DE.results.HvsF.B.RDS"))$DEfound
+#51,672 elements
+HF.C.list<- readRDS(here("data", "intermediate", "DE.results.HvsF.C.RDS"))$DEfound
+#622,302 elements
+HF.D.list<- readRDS(here("data", "intermediate", "DE.results.HvsF.D.RDS"))$DEfound
+#85,833 elements
+
+#Create a data frame
+annot <- readRDS(here("data", "intermediate", "annot.RDS")) #14,709,097 obs. of 33 variables
+DA.stage  <- data.frame("TvsSE.DroughtSE" = as.integer(annot$gene_id %in% TSE.A.list),
+                  "TvsSE.DroughtB" = as.integer(annot$gene_id %in% TSE.B.list),
+                  "TvsSE.DroughtH" = as.integer(annot$gene_id %in% TSE.C.list),
+                  "TvsSE.CTRL" = as.integer(annot$gene_id %in% TSE.D.list),
+                  "SEvsB.DroughtSE" = as.integer(annot$gene_id %in% SEB.A.list),
+                  "SEvsB.DroughtB" = as.integer(annot$gene_id %in% SEB.B.list),
+                  "SEvsB.DroughtH" = as.integer(annot$gene_id %in% SEB.C.list),
+                  "SEvsB.CTRL" = as.integer(annot$gene_id %in% SEB.D.list),
+                  "BvsH.DroughtSE" = as.integer(annot$gene_id %in% BH.A.list),
+                  "BvsH.DroughtB" = as.integer(annot$gene_id %in% BH.B.list),
+                  "BvsH.DroughtH" = as.integer(annot$gene_id %in% BH.C.list),
+                  "BvsH.CTRL" = as.integer(annot$gene_id %in% BH.D.list),
+                  "HvsF.DroughtSE" = as.integer(annot$gene_id %in% HF.A.list),
+                  "HvsF.DroughtB" = as.integer(annot$gene_id %in% HF.B.list),
+                  "HvsF.DroughtH" = as.integer(annot$gene_id %in% HF.C.list),
+                  "HvsF.CTRL" = as.integer(annot$gene_id %in% HF.D.list)
+)
+#Merge
+annot.DA.stage <- cbind(annot, DA.stage)
+rm(annot)
+rm(DA.stage)
+#Remove empty rows
+annot.DA.stage <- annot.DA.stage[!rowSums(annot.DA.stage[,34:49])==0,] #1,255,985  obs. by 49 variables
+#Save
+saveRDS(annot.DA.stage, file = here("data","intermediate","annot.DA.stage.RDS"))
+
+##Genus level
+#Summary at the genus level
+tax.genus.DA.stage.summary <- annot.DA.stage %>%
+  group_by(tax_genus) %>%
+  summarise(across(TvsSE.DroughtSE:HvsF.CTRL, ~ sum(.x, na.rm = TRUE)))
+
+#Convert to relative abundance
+tax.genus.DA.stage.summary[,2:17] <- data.frame(t(apply(tax.genus.DA.stage.summary[,2:17], 1, "/", colSums(tax.genus.DA.stage.summary[,2:17]))))
+colSums(tax.genus.DA.stage.summary[,2:17]) #Should all be ones
+#Keep only above 0.25% on average across all samples
+tax.genus.DA.stage.summary.top <- tax.genus.DA.stage.summary[rowMeans(tax.genus.DA.stage.summary[,2:17])>0.0025, ] 
+#Prepare for ggplot
+tax.genus.DA.stage.summary.t <- data.frame(t(tax.genus.DA.stage.summary.top))
+colnames(tax.genus.DA.stage.summary.t) <- tax.genus.DA.stage.summary.t[1,]
+tax.genus.DA.stage.summary.t <- tax.genus.DA.stage.summary.t[-1,]
+tax.genus.DA.stage.summary.t$Treatment <- rep(c("Drought at Stem Elongation", "Drought at Booting", "Drought at Heading", "Control"),4)
+tax.genus.DA.stage.summary.t$GrowthStage <- c(rep("TvsSE",4), rep("SEvsB",4), rep("BvsH", 4), rep("HvsF",4))
+tax.genus.DA.stage.summary.t <- tax.genus.DA.stage.summary.t[,-8] #Remove NULL
+tax.genus.DA.stage.long <- gather(tax.genus.DA.stage.summary.t, Genus, relabund, 1:14) #transform in long format for ggplot
+tax.genus.DA.stage.long$GrowthStage <- factor(tax.genus.DA.stage.long$GrowthStage, c("TvsSE", "SEvsB", "BvsH", "HvsF"))#Reorder manually the growth stages
+tax.genus.DA.stage.long$Treatment <- factor(tax.genus.DA.stage.long$Treatment, c("Drought at Stem Elongation", "Drought at Booting", "Drought at Heading", "Control"))#Reorder manually the growth stages
+tax.genus.DA.stage.long$relabund <- as.numeric(tax.genus.DA.stage.long$relabund)#Make sure it's numeric
+
+#Plot
+palette(c(brewer.pal(n = 9, name = "Set1"),"lightgrey", "black", "darkred", "darkblue", "darkgreen", "purple4", "darkgrey", "white"))
+stack.genus.stage.DA <- ggplot(tax.genus.DA.stage.long, aes(fill = Genus, y = relabund, x = Treatment)) + 
+  geom_bar( stat = "summary", fun ="mean", position = "stack") +
+  ylab("Fraction of reads") + 
+  scale_fill_manual(values = palette(), guide = guide_legend(label.theme = element_text(face = "italic", size = 8))) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0,0.135), expand = c(0,0)) +
+  scale_x_discrete(name = "Treatment", labels = c("Drought at SE", "Drought at B", "Drought at H", "Control")) +
+  theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))+
+  facet_wrap(vars(GrowthStage))
+stack.genus.stage.DA
+
+##COG_function level
+#Summary at the fun level
+tax.fun.DA.stage.summary <- annot.DA.stage %>%
+  group_by(cog_function) %>%
+  summarise(across(TvsSE.DroughtSE:HvsF.CTRL, ~ sum(.x, na.rm = TRUE)))
+
+#Convert to relative abundance
+tax.fun.DA.stage.summary[,2:17] <- data.frame(t(apply(tax.fun.DA.stage.summary[,2:17], 1, "/", colSums(tax.fun.DA.stage.summary[,2:17]))))
+colSums(tax.fun.DA.stage.summary[,2:17]) #Should all be ones
+#Keep only above 0.5% on average across all samples
+tax.fun.DA.stage.summary.top <- tax.fun.DA.stage.summary[rowMeans(tax.fun.DA.stage.summary[,2:17])>0.005, ] 
+#Prepare for ggplot
+tax.fun.DA.stage.summary.t <- data.frame(t(tax.fun.DA.stage.summary.top))
+colnames(tax.fun.DA.stage.summary.t) <- tax.fun.DA.stage.summary.t[1,]
+tax.fun.DA.stage.summary.t <- tax.fun.DA.stage.summary.t[-1,]
+tax.fun.DA.stage.summary.t$Treatment <- rep(c("Drought at Stem Elongation", "Drought at Booting", "Drought at Heading", "Control"),4)
+tax.fun.DA.stage.summary.t$GrowthStage <- c(rep("TvsSE",4), rep("SEvsB",4), rep("BvsH", 4), rep("HvsF",4))
+tax.fun.DA.stage.summary.t <- tax.fun.DA.stage.summary.t[,-5] #Remove NULL
+tax.fun.DA.stage.long <- gather(tax.fun.DA.stage.summary.t, fun, relabund, 1:9) #transform in long format for ggplot
+tax.fun.DA.stage.long$GrowthStage <- factor(tax.fun.DA.stage.long$GrowthStage, c("TvsSE", "SEvsB", "BvsH", "HvsF"))#Reorder manually the growth stages
+tax.fun.DA.stage.long$Treatment <- factor(tax.fun.DA.stage.long$Treatment, c("Drought at Stem Elongation", "Drought at Booting", "Drought at Heading", "Control"))#Reorder manually the growth stages
+tax.fun.DA.stage.long$relabund <- as.numeric(tax.fun.DA.stage.long$relabund)#Make sure it's numeric
+
+#Plot
+palette(c(brewer.pal(n = 9, name = "Set1"),"lightgrey", "black", "darkred", "darkblue", "darkgreen", "purple4", "darkgrey", "white"))
+stack.fun.stage.DA <- ggplot(tax.fun.DA.stage.long, aes(fill = fun, y = relabund, x = Treatment)) + 
+  geom_bar( stat = "summary", fun ="mean", position = "stack") +
+  ylab("Fraction of reads") + 
+  scale_fill_manual(values = palette(), guide = guide_legend(label.theme = element_text(size = 8), title = "COG function")) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0,0.1), expand = c(0,0)) +
+  scale_x_discrete(name = "Treatment", labels = c("Drought at SE", "Drought at B", "Drought at H", "Control")) +
+  theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))+
+  facet_wrap(vars(GrowthStage))
+stack.fun.stage.DA
+
+#create Fig6b
+fig6b <- ggarrange(stack.genus.stage.DA, stack.fun.stage.DA, labels = c("A","B"), common.legend = F, nrow=2)
+fig6b
+ggsave(fig6b, filename = here("output", "figs", "fig6b.tiff"), compression = "lzw", dpi = 600, device = "tiff", height = 14, width = 14, units = "in")
