@@ -126,6 +126,6 @@ DE.stages.line
 #create Fig3
 fig3 <- ggarrange(DE.stages.line, diss.stages.line, labels = c("A","B"), common.legend = T, nrow=2, heights = c(1,1.3), legend = "bottom", align = "v")
 fig3
-ggsave(fig3, filename = here("output", "figs", "fig3.tiff"), compression = "lzw", dpi = 600, device = "tiff", height = 7, units = "in")
+ggsave(fig3, filename = here("output", "figs", "fig3.tiff"), compression = "lzw", dpi = 600, device = "tiff", width = 7, height = 7, units = "in")
 
 
