@@ -75,18 +75,29 @@ sum(row.names(pcoa.s) == row.names(map.s)) # 120
 #create a data frame
 pcoa.map <- data.frame(pcoa.s, map.s)
 pcoa.map$growthstage <- factor(pcoa.map$growthstage, c("tillering", "stemelongation", "booting", "heading", "flowering" ))#reorder to fit time
+pcoa.map$treatment <- factor(pcoa.map$treatment, c("ND", "RW", "DR" ))#reorder
 
 
 #Plot PCoA
-pcoa.plot.all <- ggplot(data=pcoa.map, aes(x=X1, y=X2, shape=treatment2, colour=growthstage)) + 
+#Treatment1
+pcoa.plot.all.1 <- ggplot(data=pcoa.map, aes(x=X1, y=X2, shape=growthstage, colour=treatment)) + 
+  geom_point() +
+  xlab("PCoA axis 1") + 
+  ylab("PCoA axis 2") + 
+  theme_bw()+
+  scale_color_discrete(name = "Treatment", labels = c("Not disturbed", "Rewetted", "Dry"), type = c("green", "orange","red"))+
+  scale_shape_discrete(name = "Growth Stage", labels = c("Tillering", "Stem Elongation", "Booting", "Heading", "Flowering"))
+pcoa.plot.all.1
+
+#Treatment2
+pcoa.plot.all.2 <- ggplot(data=pcoa.map, aes(x=X1, y=X2, shape=treatment2, colour=growthstage)) + 
   geom_point() +
   xlab("PCoA axis 1") + 
   ylab("PCoA axis 2") + 
   theme_bw()+
   scale_shape_discrete(name = "Treatment", labels = c("Drought at Stem Elongation", "Drought at Booting", "Drought at Heading", "Control"))+
   scale_color_discrete(name = "Growth Stage", labels = c("Tillering", "Stem Elongation", "Booting", "Heading", "Flowering"))
-pcoa.plot.all
-ggsave(pcoa.plot.all, filename = here("output", "figs", "PCoAAll.tiff"), device = "tiff", compression = "lzw", dpi = 600)
+pcoa.plot.all.2
 
 ##Fungi
 #Pcoa
@@ -110,7 +121,6 @@ pcoa.plot.fungi <- ggplot(data=pcoa.map.fungi, aes(x=X1, y=X2, shape=treatment2,
   scale_shape_discrete(name = "Treatment", labels = c("Drought at Stem Elongation", "Drought at Booting", "Drought at Heading", "Control"))+
   scale_color_discrete(name = "Growth Stage", labels = c("Tillering", "Stem Elongation", "Booting", "Heading", "Flowering"))
 pcoa.plot.fungi
-ggsave(pcoa.plot.fungi, filename = here("output", "figs", "PCoAFungi.tiff"), device = "tiff", compression = "lzw", dpi = 600)
 
 ##Bacteria
 #Pcoa
@@ -134,9 +144,4 @@ pcoa.plot.bact <- ggplot(data=pcoa.map.bact, aes(x=X1, y=X2, shape=treatment2, c
   scale_shape_discrete(name = "Treatment", labels = c("Drought at Stem Elongation", "Drought at Booting", "Drought at Heading", "Control"))+
   scale_color_discrete(name = "Growth Stage", labels = c("Tillering", "Stem Elongation", "Booting", "Heading", "Flowering"))
 pcoa.plot.bact
-ggsave(pcoa.plot.bact, filename = here("output", "figs", "PCoABact.tiff"), device = "tiff", compression = "lzw", dpi = 600)
 
-#Create multi-pannel plot
-fig1 <- ggarrange(pcoa.plot.all, pcoa.plot.bact, pcoa.plot.fungi, labels = c("A", "B", "C"), common.legend = T, legend = "right")
-fig1
-ggsave(fig1, filename = here("output", "figs", "fig1.tiff"), device = "tiff", compression = "lzw", dpi = 600)
