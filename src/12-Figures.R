@@ -26,6 +26,12 @@ ggsave(fig4, filename = here("output", "figs", "fig4.tiff"), compression = "lzw"
 
 ##FIGURE5
 #Create Fig5
-fig5 <- ggarrange(stack.genus.stage.DA, stack.fun.stage.DA, labels = c("A","B"), common.legend = F, nrow=2)
+fig5 <- ggarrange(upset.plot.TSE, upset.plot.SEB, upset.plot.BH, upset.plot.HF, labels = c("A","B", "C", "D"), common.legend = F, nrow=2, ncol = 2)
 fig5
-ggsave(fig5, filename = here("output", "figs", "fig5.tiff"), compression = "lzw", dpi = 600, device = "tiff", height = 14, width = 14, units = "in")
+ggsave(fig5, filename = here("output", "figs", "fig5.tiff"), compression = "lzw", dpi = 600, device = "tiff", height = 7, width = 14, units = "in")
+
+##FIGURE6
+#Create Fig6
+fig6 <- ggarrange(stack.genus.stage.DA, stack.fun.stage.DA, labels = c("A","B"), common.legend = F, nrow=2)
+fig6
+ggsave(fig6, filename = here("output", "figs", "fig6.tiff"), compression = "lzw", dpi = 600, device = "tiff", height = 14, width = 14, units = "in")
