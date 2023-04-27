@@ -57,7 +57,19 @@ stack.phylum <- ggplot(tax.map.long, aes(fill = Phylum, y = relabund, x = growth
   theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))+
   facet_wrap(vars(treatment2), labeller = labeller(treatment2 = c("A" = "Drought at Stem Elongation", "B" = "Drought at Booting", "C" = "Drought at Heading", "D" = "Control")))
 stack.phylum
-ggsave(stack.phylum, filename = here("output", "figs", "fig4.tiff"), device = "tiff", compression = "lzw", dpi = 600)
+
+#Omit NULL
+tax.map.long.nonull <- tax.map.long[tax.map.long$Phylum != "NULL.",]
+stack.phylum.2 <- ggplot(tax.map.long.nonull, aes(fill = Phylum, y = relabund, x = growthstage)) + 
+  geom_bar( stat = "summary", fun ="mean", position = "stack") +
+  ylab("Fraction of reads") + 
+  scale_fill_manual(values = palette(), guide = guide_legend(label.theme = element_text(face = "italic", size = 8)), labels = c("Acidobacteria", "Actinobacteria", "Ascomycota", "Bacteroidetes", "Can. Rokubacteria", "Chloroflexi", "Cyanobacteria", "Firmicutes", "Gemmatimonadetes", "Planctomycetes", "Proteobacteria", "Streptophyta", "Verrucomicrobia", "Others")) +
+  theme_bw() +
+  scale_y_continuous( expand = c(0,0)) +
+  scale_x_discrete(name = "Growth Stage", labels = c("Tillering", "Stem Elongation", "Booting", "Heading", "Flowering")) +
+  theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))+
+  facet_wrap(vars(treatment2), labeller = labeller(treatment2 = c("A" = "Drought at Stem Elongation", "B" = "Drought at Booting", "C" = "Drought at Heading", "D" = "Control")))
+stack.phylum.2
 
 ##Functions at the COG category level for ALL - use the cluster for first part
 library(tidyverse)
@@ -107,7 +119,7 @@ fun.map.long$growthstage <- factor(fun.map.long$growthstage, c("tillering", "ste
 
 #Plot
 palette(c(brewer.pal(n = 9, name = "Set1"),"lightgrey", "black", "darkred", "darkblue", "darkgreen", "purple4", "darkgrey", "white"))
-stack.cog <- ggplot(fun.map.long, aes(fill = COG, y = relabund, x = growthstage)) + 
+stack.cog.1 <- ggplot(fun.map.long, aes(fill = COG, y = relabund, x = growthstage)) + 
   geom_bar( stat = "identity", position = "fill") +
   ylab("Fraction of reads") + 
   scale_fill_manual(values = palette(), labels = c("AA transport and metabolism", "CH transport and metabolism", "Cell envelope/outer membrane", "DNA replication/recomb./repair", "Energy prod. and conversion", "Function unknown", "General function prediction only", "Inorganic ion transport and metabolism", "Lipid metabolism", "No match", "Others", "Posttranslational mod./prot. turnover/chaperones", "Signal transduction", "Transcription", "Translation/ribosomes"), guide = guide_legend(label.theme = element_text(size = 8))) +
@@ -116,8 +128,20 @@ stack.cog <- ggplot(fun.map.long, aes(fill = COG, y = relabund, x = growthstage)
   scale_x_discrete(name = "Growth Stage", labels = c("Tillering", "Stem Elongation", "Booting", "Heading", "Flowering")) +
   theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))+
   facet_wrap(vars(treatment2), labeller = labeller(treatment2 = c("A" = "Drought at Stem Elongation", "B" = "Drought at Booting", "C" = "Drought at Heading", "D" = "Control")))
-stack.cog
-ggsave(stack.cog, filename = here("output", "figs", "fig5.tiff"), device = "tiff", compression = "lzw", dpi = 600)
+stack.cog.1
+
+#Omit NULL
+fun.map.long.nonull <- fun.map.long[fun.map.long$COG != "NULL.",]
+stack.cog.2 <- ggplot(fun.map.long.nonull, aes(fill = COG, y = relabund, x = growthstage)) + 
+  geom_bar(stat = "summary", fun ="mean", position = "stack") +
+  ylab("Fraction of reads") + 
+  scale_fill_manual(values = palette(), labels = c("AA transport and metabolism", "CH transport and metabolism", "Cell envelope/outer membrane", "DNA replication/recomb./repair", "Energy prod. and conversion", "Function unknown", "General function prediction only", "Inorganic ion transport and metabolism", "Lipid metabolism", "Others", "Posttranslational mod./prot. turnover/chaperones", "Signal transduction", "Transcription", "Translation/ribosomes"), guide = guide_legend(label.theme = element_text(size = 8))) +
+  theme_bw() +
+  scale_y_continuous( expand = c(0,0)) +
+  scale_x_discrete(name = "Growth Stage", labels = c("Tillering", "Stem Elongation", "Booting", "Heading", "Flowering")) +
+  theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))+
+  facet_wrap(vars(treatment2), labeller = labeller(treatment2 = c("A" = "Drought at Stem Elongation", "B" = "Drought at Booting", "C" = "Drought at Heading", "D" = "Control")))
+stack.cog.2
 
 ###Stack bar charts for the DA transcripts (treatments vs. control, 5 growth stages x 3 treatments = 15)
 #Create DA transcripts lists
@@ -204,7 +228,7 @@ tax.genus.DA.long$relabund <- as.numeric(tax.genus.DA.long$relabund)#Make sure i
 palette(c(brewer.pal(n = 9, name = "Set1"),"lightgrey", "black", "darkred", "darkblue", "darkgreen", "purple4", "darkgrey", "white"))
 stack.genus.DA <- ggplot(tax.genus.DA.long, aes(fill = Genus, y = relabund, x = GrowthStage)) + 
   geom_bar( stat = "summary", fun ="mean", position = "stack") +
-  ylab("Fraction of reads") + 
+  ylab("Fraction of DA transcripts") + 
   scale_fill_manual(values = palette(), guide = guide_legend(label.theme = element_text(face = "italic", size = 8))) +
   theme_bw() +
   scale_y_continuous(limits = c(0,0.130), expand = c(0,0)) +
@@ -240,7 +264,7 @@ tax.fun.DA.long$relabund <- as.numeric(tax.fun.DA.long$relabund)#Make sure it's 
 palette(c(brewer.pal(n = 9, name = "Set1"),"lightgrey", "black", "darkred", "darkblue", "darkgreen", "purple4", "grey33", "skyblue", "cyan", "magenta", "brown4", "yellow4"))
 stack.fun.DA <- ggplot(tax.fun.DA.long, aes(fill = fun, y = relabund, x = GrowthStage)) + 
   geom_bar( stat = "summary", fun ="mean", position = "stack") +
-  ylab("Fraction of reads") + 
+  ylab("Fraction of DA transcripts") + 
   scale_fill_manual(values = palette(), guide = guide_legend(label.theme = element_text(size = 8), ncol = 1, title = "COG function")) +
   theme_bw() +
   scale_y_continuous(limits = c(0,0.150), expand = c(0,0)) +
@@ -248,11 +272,6 @@ stack.fun.DA <- ggplot(tax.fun.DA.long, aes(fill = fun, y = relabund, x = Growth
   theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))+
   facet_wrap(vars(Treatment))
 stack.fun.DA
-
-#create Fig6
-fig6 <- ggarrange(stack.genus.DA, stack.fun.DA, labels = c("A","B"), common.legend = F, nrow=2)
-fig6
-ggsave(fig6, filename = here("output", "figs", "fig6.tiff"), compression = "lzw", dpi = 600, device = "tiff", height = 14, width = 14, units = "in")
 
 ###Stack bar charts for the DA transcripts (stage vs. previous, 4 growth stage pairs x 4 treatments = 16)
 #Create DA transcripts lists
@@ -388,8 +407,3 @@ stack.fun.stage.DA <- ggplot(tax.fun.DA.stage.long, aes(fill = fun, y = relabund
   theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))+
   facet_wrap(vars(GrowthStage))
 stack.fun.stage.DA
-
-#create Fig6b
-fig6b <- ggarrange(stack.genus.stage.DA, stack.fun.stage.DA, labels = c("A","B"), common.legend = F, nrow=2)
-fig6b
-ggsave(fig6b, filename = here("output", "figs", "fig6b.tiff"), compression = "lzw", dpi = 600, device = "tiff", height = 14, width = 14, units = "in")
