@@ -5,15 +5,18 @@
 
 #Use data frame from 07-Stack... Contains all 15 treatment x stage combos
 annot.DA <- readRDS(file = here("data","intermediate","annot.DA.RDS")) #Empty rows removed: 317997 obs of 48 variables
+#focus on DR and RW
+annot.DA.DR.RW <- annot.DA[,c(35,36,41,42,47,48)]
+annot.DA.DR.RW <- annot.DA.DR.RW[rowSums(annot.DA.DR.RW)>0,] #remove empty rows
 
-#Plot using the UpSetR package
-upset.plot <- upset(annot.DA[,c(35,36,41,42,47,48)], sets = c("DroughtSEatSE", "DroughtSEatB", "DroughtBatB", "DroughtBatH", "DroughtHatH", "DroughtHatF"), nintersects = NA, keep.order = TRUE)
+#Plot using the ComplexUpset package
+upset.plot <-  upset(data = annot.DA.DR.RW,
+                     intersect = c("DroughtSEatSE", "DroughtSEatB", "DroughtBatB", "DroughtBatH", "DroughtHatH", "DroughtHatF"), 
+                     min_size=100,
+                     base_annotations=list('Intersection size'=intersection_size(counts=FALSE)),
+                     
+                )
 upset.plot
-
-#Create figure 7
-upset.plot
-fig7 <- grid.grab(wrap.grobs = TRUE)
-ggsave(file = here("output", "figs", "fig7.tiff"), fig7, width = 14, height = 7, units = "in", dpi = 600, compression = "lzw")
 
 #Get genes and annotation when majority, export tables, save object for 11-Heatmap
 shared.maj <- annot.DA[rowSums(annot.DA[,c(35,36,41,42,47,48)])>=3,] #Across all: 800 transcripts
@@ -30,30 +33,15 @@ write.table(shared.maj.2, file = here("output", "tables", "shared.DA.next2.treat
 #Use data frame from 07-Stack... Contains all 16 treatment x stage combos
 annot.DA.stage <- readRDS(file = here("data","intermediate","annot.DA.stage.RDS")) #Empty rows removed: 1255985 obs of 49 variables
 
-#Plot using the UpSetR package
-upset.plot.TSE <- upset(annot.DA.stage[,34:37], sets = c("TvsSE.DroughtSE", "TvsSE.DroughtB", "TvsSE.DroughtH", "TvsSE.CTRL"), nintersects = NA, keep.order = TRUE)
+#Plot using the ComplexUpset package
+upset.plot.TSE <- upset(annot.DA.stage[,34:37], intersect = c("TvsSE.DroughtSE", "TvsSE.DroughtB", "TvsSE.DroughtH", "TvsSE.CTRL"))
 upset.plot.TSE
-upset.plot.SEB <- upset(annot.DA.stage[,38:41], sets = c("SEvsB.DroughtSE", "SEvsB.DroughtB", "SEvsB.DroughtH", "SEvsB.CTRL"), nintersects = NA, keep.order = TRUE)
+upset.plot.SEB <- upset(annot.DA.stage[,38:41], intersect = c("SEvsB.DroughtSE", "SEvsB.DroughtB", "SEvsB.DroughtH", "SEvsB.CTRL"))
 upset.plot.SEB
-upset.plot.BH <- upset(annot.DA.stage[,42:45], sets = c("BvsH.DroughtSE", "BvsH.DroughtB", "BvsH.DroughtH", "BvsH.CTRL"), nintersects = NA, keep.order = TRUE)
+upset.plot.BH <- upset(annot.DA.stage[,42:45], intersect = c("BvsH.DroughtSE", "BvsH.DroughtB", "BvsH.DroughtH", "BvsH.CTRL"))
 upset.plot.BH
-upset.plot.HF <- upset(annot.DA.stage[,46:49], sets = c("HvsF.DroughtSE", "HvsF.DroughtB", "HvsF.DroughtH", "HvsF.CTRL"), nintersects = NA, keep.order = TRUE)
+upset.plot.HF <- upset(annot.DA.stage[,46:49], intersect = c("HvsF.DroughtSE", "HvsF.DroughtB", "HvsF.DroughtH", "HvsF.CTRL"))
 upset.plot.HF
-
-#Create figure 7b
-upset.plot.TSE
-TSE <- grid.grab(wrap.grobs = TRUE)
-ggsave(file = here("output", "figs", "fig7TSE.tiff"), TSE, width = 7, height = 3.5, units = "in", dpi = 600, compression = "lzw")
-upset.plot.SEB
-SEB <- grid.grab(wrap.grobs = TRUE)
-ggsave(file = here("output", "figs", "fig7SEB.tiff"), SEB, width = 7, height = 3.5, units = "in", dpi = 600, compression = "lzw")
-upset.plot.BH
-BH <- grid.grab(wrap.grobs = TRUE)
-ggsave(file = here("output", "figs", "fig7BH.tiff"), BH, width = 7, height = 3.5, units = "in", dpi = 600, compression = "lzw")
-upset.plot.HF
-HF <- grid.grab(wrap.grobs = TRUE)
-ggsave(file = here("output", "figs", "fig7HF.tiff"), HF, width = 7, height = 3.5, units = "in", dpi = 600, compression = "lzw")
-
 
 
 
