@@ -29,5 +29,3 @@ ann_colors = list(Treatment = c("DR" = "red", "ND" = "green", "RW" = "orange"),
 heatmap.shared1 <- pheatmap(MT.rel.shared1.scale, annotation_row = treatment, annotation_col = tax.shared1,
                             cluster_rows = TRUE, fontsize_col = 8, show_rownames = F, annotation_colors = ann_colors
                             )
-#Save figure
-ggsave(file = here("output", "figs", "fig8.tiff"), heatmap.shared1, width = 14, height = 7, units = "in", dpi = 600, compression = "lzw")
