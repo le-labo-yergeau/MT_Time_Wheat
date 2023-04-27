@@ -363,7 +363,7 @@ tax.genus.DA.stage.long$relabund <- as.numeric(tax.genus.DA.stage.long$relabund)
 palette(c(brewer.pal(n = 9, name = "Set1"),"lightgrey", "black", "darkred", "darkblue", "darkgreen", "purple4", "darkgrey", "white"))
 stack.genus.stage.DA <- ggplot(tax.genus.DA.stage.long, aes(fill = Genus, y = relabund, x = Treatment)) + 
   geom_bar( stat = "summary", fun ="mean", position = "stack") +
-  ylab("Fraction of reads") + 
+  ylab("Fraction of DA transcripts") + 
   scale_fill_manual(values = palette(), guide = guide_legend(label.theme = element_text(face = "italic", size = 8))) +
   theme_bw() +
   scale_y_continuous(limits = c(0,0.135), expand = c(0,0)) +
@@ -399,7 +399,7 @@ tax.fun.DA.stage.long$relabund <- as.numeric(tax.fun.DA.stage.long$relabund)#Mak
 palette(c(brewer.pal(n = 9, name = "Set1"),"lightgrey", "black", "darkred", "darkblue", "darkgreen", "purple4", "darkgrey", "white"))
 stack.fun.stage.DA <- ggplot(tax.fun.DA.stage.long, aes(fill = fun, y = relabund, x = Treatment)) + 
   geom_bar( stat = "summary", fun ="mean", position = "stack") +
-  ylab("Fraction of reads") + 
+  ylab("Fraction of DA transcripts") + 
   scale_fill_manual(values = palette(), guide = guide_legend(label.theme = element_text(size = 8), title = "COG function")) +
   theme_bw() +
   scale_y_continuous(limits = c(0,0.1), expand = c(0,0)) +
