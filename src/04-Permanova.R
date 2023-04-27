@@ -12,11 +12,30 @@ sum(row.names(bray.s) == colnames(bray.s))#120
 anova(betadisper(as.dist(bray.s), group = map.s$treatment2)) #F=0.6876, P=0.5614
 anova(betadisper(as.dist(bray.s), group = map.s$growthstage)) #F=13.194, P=7.057e-09
 
+set.seed(69)
+
 #Permanova
 perm <-how(nperm = 999)
 setBlocks (perm) <- with(map.s, block)
-permanova.all <- adonis2(as.dist(bray.s)~treatment2*growthstage, data = map.s, permutations = perm)
-permanova.all
+
+#Treatment1
+set.seed(69)
+permanova.all.1 <- adonis2(as.dist(bray.s)~treatment*growthstage, data = map.s, permutations = perm)
+permanova.all.1
+adonis2(formula = as.dist(bray.s) ~ treatment * growthstage, data = map.s, permutations = perm)
+
+#Df SumOfSqs      R2      F Pr(>F)    
+#treatment               2   1.4195 0.06902 4.9258  0.001 ***
+#  growthstage             4   2.6908 0.13084 4.6688  0.001 ***
+#  treatment:growthstage   4   0.7505 0.03649 1.3021  0.038 *  
+#  Residual              109  15.7052 0.76365                  
+#Total                 119  20.5659 1.00000          
+
+
+#Treatment2
+set.seed(69)
+permanova.all.2 <- adonis2(as.dist(bray.s)~treatment2*growthstage, data = map.s, permutations = perm)
+permanova.all.2
 
 #adonis2(formula = as.dist(bray.s) ~ treatment2 * growthstage, data = map.s, permutations = perm)
 #Df SumOfSqs      R2      F Pr(>F)    
@@ -25,7 +44,6 @@ permanova.all
 #  treatment2:growthstage  12   2.2841 0.11106 1.3290  0.001 ***
 #  Residual               100  14.3218 0.69638                  
 #Total                  119  20.5659 1.00000             
-
 
 ##Fungi
 #Import objects
@@ -42,6 +60,7 @@ anova(betadisper(as.dist(bray.fungi.s), group = map.s$growthstage)) #F=4.488; P=
 #Permanova
 perm <-how(nperm = 999)
 setBlocks (perm) <- with(map.s, block)
+set.seed(69)
 permanova.fungi <- adonis2(as.dist(bray.fungi.s)~treatment2*growthstage, data = map.s, permutations = perm)
 permanova.fungi
 
@@ -68,6 +87,7 @@ anova(betadisper(as.dist(bray.bact.s), group = map.s$growthstage)) #F=11.555; P=
 #Permanova
 perm <-how(nperm = 999)
 setBlocks (perm) <- with(map.s, block)
+set.seed(69)
 permanova.bact <- adonis2(as.dist(bray.bact.s)~treatment2*growthstage, data = map.s, permutations = perm)
 permanova.bact
 
