@@ -34,13 +34,13 @@ write.table(shared.maj.2, file = here("output", "tables", "shared.DA.next2.treat
 annot.DA.stage <- readRDS(file = here("data","intermediate","annot.DA.stage.RDS")) #Empty rows removed: 1255985 obs of 49 variables
 
 #Plot using the ComplexUpset package
-upset.plot.TSE <- upset(annot.DA.stage[,34:37], intersect = c("TvsSE.DroughtSE", "TvsSE.DroughtB", "TvsSE.DroughtH", "TvsSE.CTRL"))
+upset.plot.TSE <- upset(annot.DA.stage[,34:37], intersect = c("TvsSE.DroughtSE", "TvsSE.DroughtB", "TvsSE.DroughtH", "TvsSE.CTRL"), min_degree = 1, base_annotations=list('Intersection size'=intersection_size(counts=FALSE)))
 upset.plot.TSE
-upset.plot.SEB <- upset(annot.DA.stage[,38:41], intersect = c("SEvsB.DroughtSE", "SEvsB.DroughtB", "SEvsB.DroughtH", "SEvsB.CTRL"))
+upset.plot.SEB <- upset(annot.DA.stage[,38:41], intersect = c("SEvsB.DroughtSE", "SEvsB.DroughtB", "SEvsB.DroughtH", "SEvsB.CTRL"), min_degree = 1, base_annotations=list('Intersection size'=intersection_size(counts=FALSE)))
 upset.plot.SEB
-upset.plot.BH <- upset(annot.DA.stage[,42:45], intersect = c("BvsH.DroughtSE", "BvsH.DroughtB", "BvsH.DroughtH", "BvsH.CTRL"))
+upset.plot.BH <- upset(annot.DA.stage[,42:45], intersect = c("BvsH.DroughtSE", "BvsH.DroughtB", "BvsH.DroughtH", "BvsH.CTRL"), min_degree = 1, base_annotations=list('Intersection size'=intersection_size(counts=FALSE)))
 upset.plot.BH
-upset.plot.HF <- upset(annot.DA.stage[,46:49], intersect = c("HvsF.DroughtSE", "HvsF.DroughtB", "HvsF.DroughtH", "HvsF.CTRL"))
+upset.plot.HF <- upset(annot.DA.stage[,46:49], intersect = c("HvsF.DroughtSE", "HvsF.DroughtB", "HvsF.DroughtH", "HvsF.CTRL"), min_degree = 1, base_annotations=list('Intersection size'=intersection_size(counts=FALSE)))
 upset.plot.HF
 
 
