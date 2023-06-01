@@ -240,7 +240,3 @@ MT.fungi.F.D <- MT.fungi[,colnames(MT.fungi) %in% list.samples.F.D]
 saveRDS(MT.fungi.F.D, file = here("data", "intermediate", "MT.fungi.F.D.RDS"))
 rm(MT.fungi.F.D)
 
-#Import bray for all 
-bray <- read.table(file = here("data", "raw", "bray_curtis_feature_table_normalized.txt"), header = T, row.names = 1, sep = "\t") #120 obs in 121 variables
-colnames(bray) <- row.names(bray)
-saveRDS(bray,file = here("data", "intermediate", "bray.RDS"))
