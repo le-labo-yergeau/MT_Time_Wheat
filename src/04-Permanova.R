@@ -22,7 +22,7 @@ setBlocks (perm) <- with(map.s, block)
 set.seed(69)
 permanova.all.1 <- adonis2(as.dist(bray.s)~treatment*growthstage, data = map.s, permutations = perm)
 permanova.all.1
-adonis2(formula = as.dist(bray.s) ~ treatment * growthstage, data = map.s, permutations = perm)
+#adonis2(formula = as.dist(bray.s) ~ treatment * growthstage, data = map.s, permutations = perm)
 
 #Df SumOfSqs      R2      F Pr(>F)    
 #treatment               2   1.4195 0.06902 4.9258  0.001 ***
