@@ -366,7 +366,7 @@ stack.genus.stage.DA <- ggplot(tax.genus.DA.stage.long, aes(fill = Genus, y = re
   ylab("Fraction of DA transcripts") + 
   scale_fill_manual(values = palette(), guide = guide_legend(label.theme = element_text(face = "italic", size = 8))) +
   theme_bw() +
-  scale_y_continuous(limits = c(0,0.135), expand = c(0,0)) +
+  scale_y_continuous(limits = c(0,0.175), expand = c(0,0)) +
   scale_x_discrete(name = "Treatment", labels = c("Drought at SE", "Drought at B", "Drought at H", "Control")) +
   theme(axis.text.x = element_text(size = 8, angle = 45, hjust = 1))+
   facet_wrap(vars(GrowthStage))
