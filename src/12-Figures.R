@@ -1,7 +1,7 @@
 ###Create figures 
-
+###Numbering changed after revision: Fig1=Fig2, Fig2=Fig3, etc.
 ##FIGURE1
-fig1a <- ggarrange(pcoa.plot.all.1, pcoa.plot.all.2, labels = c("A", "B"), common.legend = F, legend = "right")
+fig1a <- ggarrange(pcoa.plot.all.2, pcoa.plot.all.1, labels = c("A", "B"), common.legend = F, legend = "right")
 fig1a
 fig1b <- ggarrange(fig1a, stack.phylum.2, labels = c("", "C"), common.legend = F, legend = "right", nrow = 2, heights = c(1,2))
 fig1b

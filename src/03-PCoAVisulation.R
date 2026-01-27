@@ -79,14 +79,15 @@ pcoa.map$treatment <- factor(pcoa.map$treatment, c("ND", "RW", "DR" ))#reorder
 
 
 #Plot PCoA
+palette(c(brewer.pal(n = 9, name = "Set1"),"lightgrey", "black", "darkred", "darkblue", "darkgreen", "purple4", "darkgrey", "white"))
 #Treatment1
-pcoa.plot.all.1 <- ggplot(data=pcoa.map, aes(x=X1, y=X2, shape=growthstage, colour=treatment)) + 
+pcoa.plot.all.1 <- ggplot(data=pcoa.map, aes(x=X1, y=X2, colour=growthstage, shape=treatment)) + 
   geom_point() +
-  xlab("PCoA axis 1") + 
-  ylab("PCoA axis 2") + 
+  #xlab("PCoA axis 1") + 
+  #ylab("PCoA axis 2") + 
   theme_bw()+
-  scale_color_discrete(name = "Treatment", labels = c("Not disturbed", "Rewetted", "Dry"), type = c("green", "orange","red"))+
-  scale_shape_discrete(name = "Growth Stage", labels = c("Tillering", "Stem Elongation", "Booting", "Heading", "Flowering"))
+  scale_shape_discrete(name = "Treatment", labels = c("Not disturbed", "Rewetted", "Dry"))+
+  scale_color_discrete(name = "Growth Stage", labels = c("Tillering", "Stem Elongation", "Booting", "Heading", "Flowering"), palette = palette())
 pcoa.plot.all.1
 
 #Treatment2
@@ -96,7 +97,7 @@ pcoa.plot.all.2 <- ggplot(data=pcoa.map, aes(x=X1, y=X2, shape=treatment2, colou
   ylab("PCoA axis 2") + 
   theme_bw()+
   scale_shape_discrete(name = "Treatment", labels = c("Drought at Stem Elongation", "Drought at Booting", "Drought at Heading", "Control"))+
-  scale_color_discrete(name = "Growth Stage", labels = c("Tillering", "Stem Elongation", "Booting", "Heading", "Flowering"))
+  scale_color_discrete(name = "Growth Stage", labels = c("Tillering", "Stem Elongation", "Booting", "Heading", "Flowering"), palette = palette())
 pcoa.plot.all.2
 
 ##Fungi
