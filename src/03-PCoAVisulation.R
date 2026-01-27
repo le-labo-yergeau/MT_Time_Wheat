@@ -83,9 +83,10 @@ palette(c(brewer.pal(n = 9, name = "Set1"),"lightgrey", "black", "darkred", "dar
 #Treatment1
 pcoa.plot.all.1 <- ggplot(data=pcoa.map, aes(x=X1, y=X2, colour=growthstage, shape=treatment)) + 
   geom_point() +
-  #xlab("PCoA axis 1") + 
-  #ylab("PCoA axis 2") + 
-  theme_bw()+
+  xlab("") + 
+  ylab("") + 
+  theme_minimal()+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   scale_shape_discrete(name = "Treatment", labels = c("Not disturbed", "Rewetted", "Dry"))+
   scale_color_discrete(name = "Growth Stage", labels = c("Tillering", "Stem Elongation", "Booting", "Heading", "Flowering"), palette = palette())
 pcoa.plot.all.1
@@ -93,10 +94,11 @@ pcoa.plot.all.1
 #Treatment2
 pcoa.plot.all.2 <- ggplot(data=pcoa.map, aes(x=X1, y=X2, shape=treatment2, colour=growthstage)) + 
   geom_point() +
-  xlab("PCoA axis 1") + 
-  ylab("PCoA axis 2") + 
-  theme_bw()+
-  scale_shape_discrete(name = "Treatment", labels = c("Drought at Stem Elongation", "Drought at Booting", "Drought at Heading", "Control"))+
+  xlab("") + 
+  ylab("") + 
+  theme_minimal()+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  scale_shape_discrete(name = "Treatment", labels = c("Drought at SE", "Drought at B", "Drought at H", "Control"))+
   scale_color_discrete(name = "Growth Stage", labels = c("Tillering", "Stem Elongation", "Booting", "Heading", "Flowering"), palette = palette())
 pcoa.plot.all.2
 
